@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+access_itricks_me_user,itricks.me.user,model_itricks_me,base.group_user,1,1,1,1
+access_itricks_me_root,itricks.me.root,model_itricks_me,base.group_system,1,1,1,1
+access_itricks_me_custom_group,itricks.me.root,model_itricks_me,base.itricks_me,1,1,1,1
+                

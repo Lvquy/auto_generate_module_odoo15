@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="itricks_me_form" model="ir.ui.view">
+            <field name="name">itricks.me.form</field>
+            <field name="model">itricks.me</field>
+            <field name="arch" type="xml">
+                <form string="ItricksMe">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="0,1"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="state"/>
+                            </group>
+                            <group>
+                                <field name="state"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="nhanvien" string="itricks_me">
+                                <field name="nhan_vien"/>
+                            </page>
+                        </notebook>
+                        <span>Ghi chú:</span>
+                        <field name="note"/>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+        <record id="itricks_me_tree" model="ir.ui.view">
+            <field name="name">itricks.me.tree</field>
+            <field name="model">itricks.me</field>
+            <field name="arch" type="xml">
+                <tree string="ItricksMe" decoration-success="state == '1'">
+                    <field name="name" optional="show"/>
+                    <field name="note" optional="hide"/>
+                    <field name="state" optional="show"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="action_view_itricks_me" model="ir.actions.act_window">
+            <field name="name">ItricksMe</field>
+            <field name="res_model">itricks.me</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new ...
+                </p>
+            </field>
+        </record>
+        
+        <menuitem id="menu_itricks_me" name="ItricksMe" sequence="1"
+                  web_icon="itricks_me,static/img/icon.png"
+                  groups="base.group_system,itricks_me.group_itricks_me"/>
+        <menuitem id="menu_sub_itricks_me" name="ItricksMe" parent="menu_itricks_me" action="action_view_itricks_me"
+                  sequence="1" groups="base.group_system,itricks_me.group_itricks_me"/>
+                
