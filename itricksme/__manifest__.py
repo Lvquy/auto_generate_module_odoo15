@@ -20,7 +20,7 @@
         'report/menu.xml',
         'report/report.xml',
         # views
-        'views/itricks_me.xml',
+        'views/zalo_oa.xml',
     ],
     'installable': True,
     'application': True,

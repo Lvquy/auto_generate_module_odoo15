@@ -1,6 +1,6 @@
-import os
+import os, shutil
 
-
+module_name = 'itricksme'
 def xoa_nhieu_thu_muc(danh_sach_thu_muc):
     for ten_thu_muc in danh_sach_thu_muc:
         try:
@@ -9,26 +9,22 @@ def xoa_nhieu_thu_muc(danh_sach_thu_muc):
                     duong_dan_file = os.path.join(root, file)
                     os.remove(duong_dan_file)
                     print(f'File "{duong_dan_file}" đã được xóa.')
-
                 os.rmdir(root)
                 print(f'Thư mục "{root}" đã được xóa.')
-
             print(f'Thư mục "{ten_thu_muc}" đã được xóa thành công.')
         except FileNotFoundError:
             print(f'Thư mục "{ten_thu_muc}" không tồn tại.')
 
-
-danh_sach_thu_muc_can_xoa = ["controllers", 'models', 'data', 'views', 'security', 'static', 'report']
+danh_sach_thu_muc_can_xoa = [module_name,module_name+'.zip']
 # Gọi hàm để xóa nhiều thư mục
 xoa_nhieu_thu_muc(danh_sach_thu_muc_can_xoa)
-
-module_name = 'itricks_me'
 
 
 def tao_thu_muc_va_file(list_tm, new_model, new_class):
     # Tạo thư mục
-    init = os.path.join(os.getcwd(), '__init__.py')
-    manifest = os.path.join(os.getcwd(), '__manifest__.py')
+    os.makedirs(module_name)
+    init = os.path.join(os.getcwd(),module_name, '__init__.py')
+    manifest = os.path.join(os.getcwd(),module_name, '__manifest__.py')
     with open(init, 'w') as file:
         file.write('# -*- coding: utf-8 -*-\nfrom . import controller, models')
     with open(manifest, 'w') as file:
@@ -63,11 +59,14 @@ def tao_thu_muc_va_file(list_tm, new_model, new_class):
     'license': 'AGPL-3',
 }}
         """)
+
+
     for tm in list_tm:
-        os.makedirs(tm)
+        path_dir = os.path.join(module_name, tm)
+        os.makedirs(path_dir)
         if tm in ['controllers']:
-            init = os.path.join(tm, '__init__.py')
-            main = os.path.join(tm, 'main.py')
+            init = os.path.join(module_name,tm, '__init__.py')
+            main = os.path.join(module_name,tm, 'main.py')
 
             with open(init, 'w') as file:
                 file.write('# -*- coding: utf-8 -*-\nfrom . import main')
@@ -81,8 +80,8 @@ class {new_class}(http.Controller):\n
         return request.render('{module_name}.team')
 """)
         if tm in ['models']:
-            init = os.path.join(tm, '__init__.py')
-            model = os.path.join(tm, new_model.replace('.', '_') + '.py')
+            init = os.path.join(module_name,tm, '__init__.py')
+            model = os.path.join(module_name,tm, new_model.replace('.', '_') + '.py')
             with open(init, 'w') as file:
                 file.write(f"""# -*- coding: utf-8 -*-\nfrom . import {new_model.replace('.', '_')}""")
             with open(model, 'w') as file:
@@ -98,6 +97,11 @@ class {new_class}(models.Model): \n
 
     name = fields.Char(string='Name', required=True)
     ma_phieu = fields.Char(string='Mã phiếu',readonly=True, default=lambda self: 'New')
+    _sql_constraints = [
+        ('name_unique',
+         'unique(name)',
+         'Đã tồn tại tên này!')
+    ]
     
     @api.model
     def create(self, vals):
@@ -107,8 +111,8 @@ class {new_class}(models.Model): \n
         return res
 """)
         if tm in ['data']:
-            cronjob = os.path.join(tm, 'cronjob.xml')
-            sequence = os.path.join(tm, 'sequence.xml')
+            cronjob = os.path.join(module_name,tm, 'cronjob.xml')
+            sequence = os.path.join(module_name,tm, 'sequence.xml')
             with open(cronjob, 'w') as file:
                 file.write(
                     f"""<?xml version="1.0" encoding="utf-8"?>
@@ -143,8 +147,8 @@ class {new_class}(models.Model): \n
 </odoo>
 """)
         if tm in ['report']:
-            report = os.path.join(tm, 'report.xml')
-            menu = os.path.join(tm, 'menu.xml')
+            report = os.path.join(module_name,tm, 'report.xml')
+            menu = os.path.join(module_name,tm, 'menu.xml')
             with open(menu, 'w') as file:
                 file.write(f"""<?xml version="1.0" encoding="utf-8"?>
 <odoo>
@@ -185,8 +189,8 @@ class {new_class}(models.Model): \n
 </odoo>
     """)
         if tm in ['security']:
-            group = os.path.join(tm, 'groups.xml')
-            access = os.path.join(tm, 'ir.model.access.csv')
+            group = os.path.join(module_name,tm, 'groups.xml')
+            access = os.path.join(module_name,tm, 'ir.model.access.csv')
             with open(group, 'w') as file:
                 file.write(f"""<?xml version="1.0" encoding="utf-8"?>
 <odoo>
@@ -210,12 +214,12 @@ access_{new_model.replace('.', '_')}_root,{new_model}.root,model_{new_model.repl
 access_{new_model.replace('.', '_')}_custom_group,{new_model}.root,model_{new_model.replace('.', '_')},base.{new_model.replace('.', '_')},1,1,1,1
                 """)
         if tm in ['static']:
-            path_des = os.path.join(tm, 'description')
-            path_src = os.path.join(tm, 'src')
+            path_des = os.path.join(module_name,tm, 'description')
+            path_src = os.path.join(module_name,tm, 'src')
             os.makedirs(path_des)
             os.makedirs(path_src)
         if tm in ['views']:
-            view = os.path.join(tm, f"{new_model.replace('.', '_')}.xml")
+            view = os.path.join(module_name,tm, f"{new_model.replace('.', '_')}.xml")
             with open(view, 'w') as file:
                 file.write(f"""<?xml version="1.0" encoding="utf-8"?>
 <odoo>
@@ -282,10 +286,18 @@ access_{new_model.replace('.', '_')}_custom_group,{new_model}.root,model_{new_mo
                   groups="base.group_system,{module_name}.group_{new_model.replace('.','_')}"/>
         <menuitem id="menu_sub_{new_model.replace('.','_')}" name="{new_class}" parent="menu_{new_model.replace('.','_')}" action="action_view_{new_model.replace('.','_')}"
                   sequence="1" groups="base.group_system,{module_name}.group_{new_model.replace('.','_')}"/>
-                """)
+    </data>
+</odoo>
+""")
 
 
 # Thay đổi các giá trị dưới đây theo ý của bạn
 ten_thu_muc_moi = ["controllers", 'models', 'data', 'views', 'security', 'static', 'report']
 
-tao_thu_muc_va_file(ten_thu_muc_moi, new_model='itricks.me', new_class='ItricksMe')
+
+tao_thu_muc_va_file(ten_thu_muc_moi, new_model='zalo.oa', new_class='ZaloOa')
+
+pwd_module = os.path.join(os.getcwd(),module_name)
+print(pwd_module)
+zip_filename = f'{module_name}'
+shutil.make_archive(zip_filename, 'zip', pwd_module)

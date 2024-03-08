@@ -6,10 +6,10 @@ from odoo.exceptions import UserError
 
 
 
-class ItricksMe(models.Model): 
+class ZaloOa(models.Model): 
 
-    _name = 'itricks.me'
-    _description = 'itricks.me'
+    _name = 'zalo.oa'
+    _description = 'zalo.oa'
     _rec_name = 'name'
     _order = 'name desc'
 
@@ -20,5 +20,5 @@ class ItricksMe(models.Model):
     def create(self, vals):
         if vals.get('ma_phieu', 'New' == 'New'):
             vals['ma_phieu'] = self.env['ir.sequence'].next_by_code('maphieu.code') or 'New'
-            res = super(ItricksMe, self).create(vals)
+            res = super(ZaloOa, self).create(vals)
         return res
